@@ -33,4 +33,4 @@ AS
 	   s.Estado = case @Atendido when 1 then 'AT' end )
 	   
   
---[Tramite].[BusquedaGeneralSolicitud] 2 , 67 , 0 ,0 , 0
+
