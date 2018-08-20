@@ -1,0 +1,17 @@
+************************
+CTE (Commont Table Expression, Table-Value Function, View and Derivate Table is not allowed use ORDER BY clause in inner queries except whether it use TOP or OFFSET-FETCH or FOR XML
+************************
+ 
+With TDE_1 AS
+(select ...)
+
+SELECT * FROM TDE_1 INNER JOIN TablaW on ...
+
+------ example 1 ---------
+WITH Sales1 as
+( select top 5 * from Sales.Orders )
+
+select * from Sales1
+
+------ example 2 ----------
+

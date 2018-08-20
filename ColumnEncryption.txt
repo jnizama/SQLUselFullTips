@@ -1,0 +1,48 @@
+USE AdventureWorks2008R2
+GO 
+
+CREATE MASTER KEY ENCRYPTION BY PASSWORD='P@ssw0rd'
+go
+
+Create Certificate HRCert
+WITH SUBJECT='Security'
+go
+
+CREATE SYMMETRIC KEY CommentKey
+WITH ALGORITHM = DES
+ENCRYPTION BY CERTIFICATE HRCert
+go
+
+ALTER TABLE HumanResources.JobCandidate
+ADD Comments varbinary(8000)
+go
+OPEN SYMMETRIC KEY CommentKey
+DECRYPTION BY CERTIFICATE HRCert
+go
+
+Declare @Comentario varchar(8000)
+SET @Comentario='Sin Comentarios'
+
+UPDATE HumanResources.JobCandidate
+SET Comments = EncryptByKey(Key_GUID('CommentKey'),@Comentario)
+go
+
+SELECT JobCandidateID, ModifiedDate, Comments FROM 
+HumanResources.JobCandidate
+go
+
+UPDATE HumanResources.JobCandidate
+SET Comments = EncryptByKey(Key_GUID('CommentKey'),'No Comments')
+go
+
+SELECT JobCandidateID, ModifiedDate, Comments FROM 
+HumanResources.JobCandidate
+go
+
+OPEN SYMMETRIC KEY CommentKey
+DECRYPTION BY CERTIFICATE HRCert
+
+SELECT JobCandidateID, ModifiedDate, 
+CONVERT(varchar,DecryptByKey(Comments)) AS 'Decrypted Comments'
+FROM HumanResources.JobCandidate
+go

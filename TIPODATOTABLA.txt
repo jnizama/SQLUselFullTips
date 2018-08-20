@@ -1,0 +1,43 @@
+
+--CREAMOS LA TABLA DE PEDIDOS
+create table pedidos ( idpedido int identity(1,1), fecha datetime, total dec(18,2))
+
+--CREAMOS TABLA DE DETALLE PEDIDO
+create table detallepedidos ( idpedido int, producto varchar(255), cantidad int )
+
+--CREAMOS UN TIPO DE DATO PERSONALIZADO DE TIPO TABLE QUE SE USARA PARA
+--GUARDAR DATOS DE TIPO PARAMETRO.
+create type TDetallePedido as TABLE (  producto varchar(255), cantidad int )
+go
+
+--AHORA CREAMOS UN PROC. ALMACENADO QUE GUARDAR EN 2 TABLAS (CABECERA Y DETALLE) 
+--MEDIANTE UNA SOLA TRANSACCION A LA BASE DE DATOS.
+create proc RegistraPedido  (@fecha datetime, @detallePedido TDetallePedido READONLY )
+AS
+BEGIN
+declare @total dec(18,2)
+declare @ID int
+	SET @total = (SELECT SUM(cantidad) FROM @detallePedido )
+	INSERT INTO pedidos (fecha, total) values (@fecha, @total)
+	SELECT @ID = SCOPE_IDENTITY();
+	INSERT INTO detallepedidos (idpedido, producto, cantidad) select @ID,producto,cantidad
+	FROM  @detallePedido
+END
+
+-- PROBAMOS EL SP CREADO CON PARAMETROS TIPO TABLA
+DECLARE @FECHA DATETIME
+DECLARE @TABLAINTERMEDIA TDetallePedido
+SET @FECHA = GETDATE()
+INSERT INTO @TABLAINTERMEDIA VALUES ('ROPAS',12), ('ZAPATILLAS',11), ('GLOBOS',1),('PEPINOS',16)
+
+
+EXEC RegistraPedido @FECHA, @TABLAINTERMEDIA
+
+
+
+Para usar el tipo de dato tabla en .NET ver la siguiente URL:
+
+http://msdn.microsoft.com/es-es/library/bb675163.aspx
+
+
+

@@ -1,0 +1,4 @@
+
+ select COUNT(DISTINCT region) FROM  [HR].[Employees]es
+
+Count distincs values

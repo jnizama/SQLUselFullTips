@@ -1,0 +1,16 @@
+SELECT custid, orderdate, 
+SUM(freight) OVER(ORDER BY custid
+ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING ) acumulativeTotal
+FROM [Sales].[Orders]
+
+-- To Calculate Moving SUM, by taking 3 moving rows:
+;WITH CTE AS (
+    SELECT BusinessEntityID AS SalesPersonID, CAST([Rate] AS DECIMAL(10,0))AS Salary, [ModifiedDate] AS SalDate
+    FROM [HumanResources].[EmployeePayHistory]
+    WHERE BusinessEntityID <= 10
+    )
+SELECT SalesPersonID, SalDate, Salary
+   ,SUM(Salary) OVER (ORDER BY SalesPersonID ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING) AS MovingSumByRowsPrevCurrentNext
+   ,SUM(Salary) OVER (ORDER BY SalesPersonID ROWS BETWEEN CURRENT ROW AND 2 FOLLOWING) AS MovingSumByRowsCurrentNext2
+FROM CTE
+ORDER BY SalesPersonID, SalDate

@@ -1,0 +1,4 @@
+
+CONSULTA PARA OBTENER CODIGOS REPETIDOS DE UNA TABLA  USANDO HAVING.
+
+select codsol from Tramite.tescsoli  group by codsol having count(*) > 1 

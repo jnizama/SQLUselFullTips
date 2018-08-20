@@ -1,0 +1,34 @@
+**-- CHANGE DATA CAPTURE
+
+  - Correr: 
+        USE AdventureWorks2008R2 
+	GO
+
+	Exec sys.sp_cdc_enable_db
+	Go
+
+	EXEC sys.sp_cdc_enable_table 
+	@source_schema = 'Sales', 
+	@source_name = 'Currency', 
+	@role_name = 'cdc_Currency'
+	GO
+
+  - Insertar una Moneda y Cambiar una Descripción
+
+  - Agregar Columna a Currency
+
+  - Correr
+	select * from cdc.ddl_history
+
+  - Correr
+	SELECT __$operation,CurrencyCode,Name,ModifiedDate
+	FROM cdc.Sales_Currency_CT;
+
+        1- delete
+ 	2- insert
+	3- Update - datos originales
+        4- Update - datos nuevos
+
+  - Correr
+	exec sys.sp_cdc_disable_db 
+

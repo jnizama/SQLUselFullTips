@@ -1,0 +1,17 @@
+
+1) Defina la vista con WITH SCHEMABINDING (Esto asegura que no se puedan modificar las tablas adyacentes de la vista)
+2) Cree el indice clustered unico
+
+
+1)
+CREATE VIEW VW_Employee
+WITH SCHEMABINDING AS  
+SELECT e.Emp_Id,e.EmployeeName,e.EmpSalary,e.StateId,e.CityId  
+FROM dbo.Employee e  
+WHEREe.EmployeeNameLIKE'[A-P]%'  
+
+2)
+CREATE UNIQUE CLUSTERED INDEX idx_Employee ON VW_Employee(e.EmployeeName)
+
+
+NOTA: La vista podrá ser tratada como si fuera una tabla normal incluso se guarda en pagina del disco.

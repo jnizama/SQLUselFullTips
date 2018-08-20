@@ -1,0 +1,23 @@
+DECLARE
+@CodigoUsuario VARCHAR(50),
+@Contrasenia VARCHAR(200)
+
+BEGIN
+...
+SET @Contrasenia = dbo.EncriptarClaveSHA1(@Contrasenia)
+...
+SELECT @IsEmail = dbo.fnAppEmailCheck(@CodigoUsuario)
+...
+		SELECT
+			@CodigoUsuarioReal = ISNULL(u.CodigoUsuario,''),
+			@CodigoConsultora = ISNULL(u.CodigoConsultora,''),
+			@PaisID = ISNULL(u.PaisID,0),
+			@TipoUsuario = ISNULL(u.TipoUsuario,0),
+			@RolID = ISNULL(ur.RolID,0)
+		FROM Usuario u WITH(NOLOCK) 
+		INNER JOIN UsuarioRol ur WITH(NOLOCK) ON u.CodigoUsuario = ur.CodigoUsuario 
+			AND ur.Activo = 1
+		WHERE u.Activo = 1
+		AND u.Email = @CodigoUsuario
+		AND u.ClaveSecreta = @Contrasenia
+

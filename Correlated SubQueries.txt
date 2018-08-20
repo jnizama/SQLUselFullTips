@@ -1,0 +1,24 @@
+Correlated Queries are subqueries where the inner querie has a reference to a column from the table in the outer query.
+
+Example 1:
+=======
+SELECT categoryid, productid, productname, unitprice
+FROM Production.Products AS P1
+WHERE unitprice =
+(SELECT MIN(unitprice)
+FROM Production.Products AS P2
+WHERE P2.categoryid = P1.categoryid);
+
+Example 2:
+=======
+SELECT custid, companyname
+FROM Sales.Customers AS C
+WHERE EXISTS
+(SELECT *
+FROM Sales.Orders AS O
+WHERE O.custid = C.custid
+AND O.orderdate = '20070212');
+
+
+
+

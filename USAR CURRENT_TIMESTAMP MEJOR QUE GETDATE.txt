@@ -1,0 +1,6 @@
+The difference is that CURRENT_TIMESTAMP is standard SQL, and so that's the one you should use ( because it should work anywhere ). getdate() is a SQL Server function, it is not guaranteed to work on other SQL platforms.
+
+From: 
+
+http://www.codeproject.com/Articles/743284/Thinking-in-SQL-Working-with-dates
+

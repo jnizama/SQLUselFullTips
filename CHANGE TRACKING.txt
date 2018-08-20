@@ -1,0 +1,20 @@
+**-- CHANGE TRACKING
+    - En Mgmnt Studio, en AW2008R2, Properties, Change Tracking y poner en True
+
+    - En Mgmnt Studio, en AW2008R2, en Tables, Sales.Currency, Properties, Change Tracking y poner en True y True
+
+    - Cambiar en Sales.Currency nombre a una Moneda
+
+    - Correr 
+DECLARE @VersionAnterior int = CHANGE_TRACKING_MIN_VALID_VERSION(OBJECT_ID('Sales.Currency') ) 
+             SELECT * FROM CHANGETABLE(CHANGES Sales.Currency, @VersionAnterior) AS Cambios
+
+      Ver syschangeoperation que es U y el código de la moneda que se cambió
+
+    - Insertar una Moneda
+
+    - Correr:
+	DECLARE @VersionAnterior int = CHANGE_TRACKING_MIN_VALID_VERSION(OBJECT_ID('Sales.Currency') ) 
+	SELECT * FROM CHANGETABLE(CHANGES Sales.Currency, @VersionAnterior) AS Cambios
+
+   - Quitar ChangeTracking de Tabla y BDD

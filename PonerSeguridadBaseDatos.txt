@@ -1,0 +1,81 @@
+ - Crear BDD PruebaTDE en C:\Temp
+
+  - Ejecutar Comandos:
+
+  Use MASTER
+  GO
+
+  CREATE MASTER KEY ENCRYPTION BY PASSWORD = 'P@ssw0rd'
+   
+  CREATE CERTIFICATE CertificadoDeServidor WITH SUBJECT = 'Certificado de Servidor'
+
+  Use PruebaTDE
+  GO
+  CREATE DATABASE ENCRYPTION KEY
+  WITH ALGORITHM = AES_128 
+  ENCRYPTION BY SERVER CERTIFICATE CertificadoDeServidor
+
+  ALTER DATABASE PruebaTDE
+  SET ENCRYPTION ON
+
+  -- Para Respaldar Master Key y Certificado
+  USE MASTER
+  OPEN MASTER KEY DECRYPTION BY PASSWORD = 'P@ssw0rd';
+  BACKUP MASTER KEY TO FILE = 'C:\Temp\RespaldoMasterKey.bak' 
+    ENCRYPTION BY PASSWORD = 'P@ssw0rd';
+
+  BACKUP CERTIFICATE CertificadoDeServidor TO FILE = 'C:\Temp\CertificadoPrueba.cer'
+    WITH PRIVATE KEY ( FILE = 'C:\Temp\CertificadoDeServidor.pvk' , 
+    ENCRYPTION BY PASSWORD = 'P@ssw0rd' );
+  GO
+
+  - Backup a Prueba
+
+  - Borrarla y restaurarla
+
+  - Restore en Server2008B y ver Error por falta de Certificado 
+    - NO se puede restaurar en otro server porque cada .cer de MS es individual a cada instalación
+
+  - Detach
+
+  - Tratar Attach en Server2008B y Falla
+
+
+  - Hacer Attach en Server2008 al de Program Files
+
+
+
+  - Restaurar Master Key y Certificado en Server2008B
+    USE Master
+    GO
+    RESTORE MASTER KEY 
+      FROM FILE = 'C:\Temp\RespaldoMasterKey.bak' 
+      DECRYPTION BY PASSWORD = 'P@ssw0rd' 
+      ENCRYPTION BY PASSWORD = 'P@ssw0rd';
+    GO
+
+    OPEN MASTER KEY DECRYPTION BY PASSWORD = 'P@ssw0rd';
+    GO
+
+    CREATE CERTIFICATE CertificadoDeServidor
+      FROM FILE = 'C:\Temp\CertificadoPrueba.cer'
+      WITH PRIVATE KEY (FILE = 'C:\Temp\CertificadoDeServidor.pvk',
+      DECRYPTION BY PASSWORD = 'P@ssw0rd');
+
+    OPEN MASTER KEY DECRYPTION BY PASSWORD = 'P@ssw0rd';
+    GO
+
+
+    RESTORE DATABASE PruebaTDE
+      FROM DISK = 'C:\Temp\PruebaTDE.BAK'
+      WITH MOVE 'PruebaTDE' TO 'C:\Temp\PruebaTDE.mdf', 
+           MOVE 'PruebaTDE_Log' TO 'C:\Temp\PruebaTDE_Log.ldf', 
+           RECOVERY
+
+  - Borrar Prueba de ambas instancias y correr
+    USE Master
+    GO
+    DROP CERTIFICATE CertificadoDeServidor 
+    DROP MASTER KEY
+
+

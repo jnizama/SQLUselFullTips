@@ -1,0 +1,12 @@
+//BACKUP - SCRIPT
+
+declare @today varchar(15)
+DECLARE @disk varchar(100)
+select @today = CONVERT(DATE, GETDATE())
+select @disk = N'C:\Documents and Settings\Administrator\Desktop\DB-Backups\BACKUP-' + @today
+--print @today
+BACKUP DATABASE microdeluxe 
+TO DISK =  @disk
+WITH NOFORMAT, INIT, NAME = N'MY_DB_BACKUP_NAME', 
+SKIP, NOREWIND, NOUNLOAD, STATS = 10
+GO

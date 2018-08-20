@@ -1,0 +1,39 @@
+------------FUNCIONES DE VENTANA TIENDE A SER MÁS OPTIMAS CON RESPECTO AL RENDIMIENTO--------------
+
+SELECT custid, row_number() OVER(PARTITION BY custid ORDER BY custid) as Correlative
+FROM [Sales].[Orders]
+
+Results:
+custid	Correlative
+1	1
+1	2
+1	3
+1	4
+1	5
+1	6
+2	1
+2	2
+2	3
+2	4
+...
+
+Totals Acumulatives
+
+SELECT custid, orderdate, 
+SUM(freight) OVER(PARTITION BY custid ORDER BY custid ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) acumulativeTotal FROM [Sales].[Orders]
+
+custid	orderdate		acumulativeTotal
+1	2007-08-25 00:00:00.000	29.46
+1	2007-10-03 00:00:00.000	90.48
+1	2007-10-13 00:00:00.000	114.42
+1	2008-01-15 00:00:00.000	183.95
+1	2008-03-16 00:00:00.000	224.37
+1	2008-04-09 00:00:00.000	225.58
+2	2008-03-04 00:00:00.000	39.92
+2	2007-11-28 00:00:00.000	51.91
+2	2007-08-08 00:00:00.000	95.81
+
+****SHORT FORM*****
+SELECT custid, orderdate, 
+SUM(freight) OVER(PARTITION BY custid ORDER BY custid desc ROWS UNBOUNDED PRECEDING) acumulativeTotal
+FROM [Sales].[Orders]

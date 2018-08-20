@@ -1,0 +1,12 @@
+ALTER FUNCTION [dbo].[EncriptarClaveSHA12]
+(
+@Clave nvarchar(max)
+)
+returns nvarchar(max)
+AS
+BEGIN
+SET @Clave = UPPER(@Clave)
+DECLARE @ClaveEncriptada NVARCHAR(MAX);
+SELECT @ClaveEncriptada = UPPER(SUBSTRING(convert(varchar(max),HashBytes('SHA1', @Clave), 1), 3, 40));
+RETURN @ClaveEncriptada;
+END
