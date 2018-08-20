@@ -1,4 +1,4 @@
-USE [AUPSJB]
+
 GO
 /****** Object:  StoredProcedure [Tramite].[BusquedaGeneralSolicitud]    Script Date: 04/24/2013 12:49:24 ******/
 SET ANSI_NULLS ON
@@ -16,14 +16,14 @@ AS
 	   case isnull(tsoli.TipCom,'') when '04' then 'BV' when '06' then 'FA' when '01' then 'RC' else '' end + '-'+
 	   isnull(substring(isnull(tsoli.NumCom,''),1,3)+ '-'+ substring(isnull(tsoli.NumCom,''), 4, len(isnull(tsoli.NumCom,''))),'')  as NumComprobante,   
        isnull(mtdEstado.Descripcion,'') as Estado, CASE Observada WHEN 0 THEN 'NO' ELSE 'SI' END Observada, 
-	   isnull(mtdEfecTerminado.Descripcion,'') EfectoTerminada, case isnull(tsoli.NumCom,'') when '' then 1 else 0 end as EstadoFalla -- EstadoFalla indica que el registro no encuentra su relación en la tabla tescsoli
+	   isnull(mtdEfecTerminado.Descripcion,'') EfectoTerminada, case isnull(tsoli.NumCom,'') when '' then 1 else 0 end as EstadoFalla -- EstadoFalla indica que el registro no encuentra su relaciÃ³n en la tabla tescsoli
        from Tramite.Solicitud s  
        INNER JOIN Tramite.Tramite t on s.TramiteID = t.TramiteID         
 	   LEFT JOIN academico.MultiTablaDetalle mtdEstado on s.Estado = mtdEstado.Valor LEFT JOIN academico.MultiTabla mt on 
 	   mtdEstado.MultitablaID = mt.MultitablaID and mt.valorEntidad = 'TRM' and mtdEstado.Auxiliar1 = 2
 	   LEFT JOIN academico.MultiTablaDetalle mtdEfecTerminado on s.EfectoTerminada = mtdEfecTerminado.Valor LEFT JOIN academico.MultiTabla mt2 on 
 	   mtdEfecTerminado.MultitablaID = mt2.MultitablaID and mt2.valorEntidad = 'TRM'  and mtdEstado.Auxiliar1 = 1
-	   LEFT JOIN SBADA02.BDSIA.dbo.tescsoli tsoli on s.NumeroSolicitud = tsoli.CodSol
+	   LEFT JOIN Server.BaseDatos.dbo.tescsoli tsoli on s.NumeroSolicitud = tsoli.CodSol
 	   left JOIN Tramite.SolicitudDerivacion solideriv on s.SolicitudID = solideriv.SolicitudID
 	   WHERE isnull(solideriv.EstadoDetalle,'') not in ('P','A') 	   
 	   AND (s.SedeID = @SedeID and s.OficinaID = @OficinaID ) --and s.Estado = 'T'	   
